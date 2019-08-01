@@ -1,0 +1,25 @@
+.root{
+    -fx-background-color: darkgray;
+}
+.label-bold{
+    -fx-text-fill: darkorchid;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+.radio-button{
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+.label-font{
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+.text-field-font{
+    -fx-background-color: darkgray;
+    -fx-border-color: gray;
+}
+.button{
+    -fx-background-color: darkorchid;
+    -fx-text-fill: beige;
+    -fx-background-radius: 6;
+}
