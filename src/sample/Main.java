@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class Main extends Application {
@@ -56,14 +57,20 @@ public class Main extends Application {
         layout.add(run,1,8,1,1);
         layout.add(choose,2,8,2,1);
 
+        ArrayList<File> flise=new ArrayList<>();
         // file chooser:
         FileChooser fileChooser = new FileChooser();
         choose.setOnAction(event -> {
             fileChooser.setTitle("Open Resource File");
             File file = fileChooser.showOpenDialog(primaryStage);
-            if (file != null) {
-                System.out.println(file.toString());
-            }
+            flise.add(file);
+
+        });
+        run.setOnAction(event -> {
+            flise.stream().forEach((i)->{if (i != null) {
+                System.out.println(i.toString());
+            }});
+
         });
 
         // Labels
@@ -112,7 +119,7 @@ public class Main extends Application {
         layout.add(textField,1,5,4,3);
 
         // textField Style
-        textField.getStyleClass().add("text-field-font");
+        //textField.getStyleClass().add("text-field-font");
 
         // Scene:
         Scene scene = new Scene(layout);
