@@ -93,11 +93,9 @@ public class Main extends Application {
                     System.out.println(i.toString());
                 }
             });
-            try {
-                Files.copy(from.toPath(), to.toPath(), StandardCopyOption.ATOMIC_MOVE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String fileName=from.getPath().substring(from.getPath().lastIndexOf("\\",from.toString().length()));
+            //Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            from.renameTo(new File( to.getPath()+"\\"+fileName));
         });
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
