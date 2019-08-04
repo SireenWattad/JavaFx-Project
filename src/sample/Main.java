@@ -3,6 +3,7 @@ package sample;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -22,7 +23,6 @@ public class Main extends Application {
 
     private final ToggleGroup group = new ToggleGroup();
     private File to,from;
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -34,7 +34,7 @@ public class Main extends Application {
         // Layout:
         GridPane layout = new GridPane();
         layout.setPadding(new Insets(15, 15, 15, 15));
-        layout.setPrefSize(400, 350);
+        layout.setPrefSize(400,350);
         layout.setHgap(5);
         //layout.setGridLinesVisible(true);
 
@@ -46,21 +46,22 @@ public class Main extends Application {
 
         // textField Style
         textArea.getStyleClass().add("text-field-font");
+
         // number of rows and columns
         final int numCols = 6;
         final int numRows = 10;
         for (int i = 0; i < numCols; i++) {
-            ColumnConstraints colConst = new ColumnConstraints();
-            colConst.setPercentWidth(100.0 / numCols);
-            layout.getColumnConstraints().add(colConst);
+//            ColumnConstraints colConst = new ColumnConstraints();
+//            colConst.setPercentWidth(100.0 / numCols);
+          layout.getColumnConstraints().add(new ColumnConstraints(58.33));
         }
         for (int i = 0; i < numRows; i++) {
-            RowConstraints rowConst = new RowConstraints();
-            rowConst.setPercentHeight(100.0 / numRows);
-            layout.getRowConstraints().add(rowConst);
+//            RowConstraints rowConst = new RowConstraints();
+//            rowConst.setPercentHeight(100.0 / numRows);
+            layout.getRowConstraints().add(new RowConstraints(40));
         }
 
-        // Button: Run
+        // Button: Run & Browse & choose
         Button run = new Button("Run");
         Button choose = new Button("Choose a file");
         Button browse = new Button("Browse");
@@ -69,6 +70,7 @@ public class Main extends Application {
         layout.add(run, 1, 8, 1, 1);
         layout.add(choose, 2, 8, 2, 1);
         layout.add(browse, 4, 8, 2, 1);
+
         ArrayList<File> files = new ArrayList<>();
 
         // file chooser:
@@ -148,6 +150,7 @@ public class Main extends Application {
 
         // Scene:
         Scene scene = new Scene(layout);
+        layout.setAlignment(Pos.CENTER);
         scene.getStylesheets().add(getClass().getResource("Style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
