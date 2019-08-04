@@ -94,8 +94,7 @@ public class Main extends Application {
                 }
             });
             String fileName=from.getPath().substring(from.getPath().lastIndexOf("\\",from.toString().length()));
-            //Files.copy(from.toPath(), to.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            from.renameTo(new File( to.getPath()+"\\"+fileName));
+                writeToFile("hello world",to.getPath()+"\\"+fileName);
         });
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -153,5 +152,25 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+    public   void writeToFile(String url, String path) {
+
+        File    file = new java.io.File(path.replaceAll(".txt","_done.txt"));
+        System.out.println(path);
+
+        //  synchronized (File.class) {
+        try {
+            if (file.exists() == false) {
+                System.out.println("We had to make a new file.");
+                file.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file.getPath(), true); //the true will append the new data
+            fw.write(url + "\n");//appends the string to the file
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("COULD NOT LOG!!");
+        }
+        //}
+    }
+
 }
 
