@@ -23,3 +23,7 @@
     -fx-text-fill: beige;
     -fx-background-radius: 6;
 }
+.progress-bar{
+    -fx-accent: darkorchid;
+    -fx-control-inner-background: #d7fbdd
+}

@@ -13,16 +13,14 @@ import javafx.scene.layout.*;
 import javafx.stage.*;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Main extends Application {
 
     private final ToggleGroup group = new ToggleGroup();
-    private File to,from;
+    private File to;
+    private int counter;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -34,7 +32,7 @@ public class Main extends Application {
         // Layout:
         GridPane layout = new GridPane();
         layout.setPadding(new Insets(15, 15, 15, 15));
-        layout.setPrefSize(400,350);
+        layout.setPrefSize(400, 350);
         layout.setHgap(5);
         //layout.setGridLinesVisible(true);
 
@@ -51,26 +49,32 @@ public class Main extends Application {
         final int numCols = 6;
         final int numRows = 10;
         for (int i = 0; i < numCols; i++) {
-//            ColumnConstraints colConst = new ColumnConstraints();
-//            colConst.setPercentWidth(100.0 / numCols);
-          layout.getColumnConstraints().add(new ColumnConstraints(58.33));
+            layout.getColumnConstraints().add(new ColumnConstraints(58.33));
         }
         for (int i = 0; i < numRows; i++) {
-//            RowConstraints rowConst = new RowConstraints();
-//            rowConst.setPercentHeight(100.0 / numRows);
             layout.getRowConstraints().add(new RowConstraints(40));
         }
 
-        // Button: Run & Browse & choose
+        // PROGRESS BAR
+        ProgressBar progressBar = new ProgressBar(0);
+        layout.add(progressBar, 1, 9, 3, 1);
+        progressBar.setPrefSize(150, 20);
+        progressBar.setVisible(false);
+
+        // Button: Run & Browse & choose & CANCEL
         Button run = new Button("Run");
         Button choose = new Button("Choose a file");
         Button browse = new Button("Browse");
+        Button cancel = new Button("Cancel");
         run.setMaxWidth(75);
         choose.setMaxWidth(250);
         layout.add(run, 1, 8, 1, 1);
         layout.add(choose, 2, 8, 2, 1);
         layout.add(browse, 4, 8, 2, 1);
+        layout.add(cancel, 4, 9, 1, 1);
+        cancel.setVisible(false);
 
+        // ArrayList Files
         ArrayList<File> files = new ArrayList<>();
 
         // file chooser:
@@ -78,25 +82,56 @@ public class Main extends Application {
         choose.setOnAction(event -> {
             fileChooser.setTitle("Open Resource File");
             File file = fileChooser.showOpenDialog(primaryStage);
-            files.add(file);
-            if (file != null) {
-                List<File> files1 = Arrays.asList(file);
-                for (File f : files1) {
-                    textArea.appendText(f.getAbsolutePath() + "\n");
-                }
-                from = file;
+            if (!files.contains(file)) {
+                files.add(file);
+                textArea.appendText(file.getAbsolutePath() + "\n");
             }
         });
+
+        // run Button On Action
         run.setOnAction(event -> {
+            //Progress Bar:
+            progressBar.setVisible(true);
+            progressBar.setProgress(0);
+            run.setDisable(true);
+            progressBar.progressProperty().unbind();
             files.stream().forEach((i) -> {
                 if (i != null) {
                     System.out.println(i.toString());
                 }
             });
-            String fileName=from.getPath().substring(from.getPath().lastIndexOf("\\",from.toString().length()));
-                writeToFile("hello world",to.getPath()+"\\"+fileName);
+            counter = 0;
+//          Task - ProgressBar
+            for (File i : files) {
+                String fileName = i.getPath().substring(i.getPath().lastIndexOf("\\", i.toString().length()));
+                i.renameTo(new File(to.getPath() + "\\" + fileName));
+                counter++;
+                progressBar.setProgress(counter / files.size());
+            }
+
+            if (progressBar.getProgress() == 1.0) {
+                progressBar.setStyle("-fx-accent: forestgreen;");
+                cancel.setVisible(false);
+                Label label = new Label("Done!!");
+                layout.add(label, 4, 9, 1, 1);
+            }
+
+            // CANCEL
+            if (progressBar.getProgress() < 1.0) {
+                cancel.setVisible(true);
+                cancel.setOnAction(event1 -> {
+                    run.setDisable(false);
+                    progressBar.progressProperty().unbind();
+                    progressBar.setProgress(0);
+                    progressBar.setVisible(false);
+                    cancel.setVisible(false);
+                    to = new File("");
+                    textArea.setText("");
+                });
+            }
         });
 
+        // Directory Chooser
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(new File("src"));
 
@@ -152,25 +187,4 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    public   void writeToFile(String url, String path) {
-
-        File    file = new java.io.File(path.replaceAll(".txt","_done.txt"));
-        System.out.println(path);
-
-        //  synchronized (File.class) {
-        try {
-            if (file.exists() == false) {
-                System.out.println("We had to make a new file.");
-                file.createNewFile();
-            }
-            FileWriter fw = new FileWriter(file.getPath(), true); //the true will append the new data
-            fw.write(url + "\n");//appends the string to the file
-            fw.close();
-        } catch (IOException e) {
-            System.out.println("COULD NOT LOG!!");
-        }
-        //}
-    }
-
 }
-
