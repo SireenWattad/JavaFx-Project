@@ -10,6 +10,7 @@
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
+.radio { -fx-background-insets: 0; }
 .label-font{
     -fx-font-weight: bold;
     -fx-font-size: 12px;
